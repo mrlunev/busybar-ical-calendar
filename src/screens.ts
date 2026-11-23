@@ -229,7 +229,8 @@ const FREE_GREEN = "#3FC069FF";
 export function frontFrame(s: FrontState): { elements: Element[]; led: string | null } {
   if (s.toast !== "") return { elements: [text("l1", s.toast, 2, 0, WHITE, { width: 70, ...SCROLL })], led: null };
   if (!s.configured) {
-    return { elements: [text("l1", "Add a calendar", 2, 0, WHITE), text("l2", "in the bar's web page", 2, 7, GREY, { width: 70, ...SCROLL })], led: null };
+    // As Host Load and Net Traffic do: a short signal here, what to do on the back.
+    return { elements: [text("l1", "ADD A CALENDAR", FRONT_W / 2, 0, WHITE, { align: "top_mid" }), text("l2", "SEE BACK SCREEN", FRONT_W / 2, 7, GREY, { align: "top_mid" })], led: null };
   }
   const logo = (x: Instance) => picture("logo", logoXpm(s.vendors[x.source] || "other"), 0, 4, "front");
   if (s.alert !== null) {

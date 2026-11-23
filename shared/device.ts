@@ -51,6 +51,15 @@ export const device = {
     await (await call("PUT", path, body)).text();
   },
 
+  /** A JSON answer of the bar's API, or null when it fails. */
+  async GetJson<T>(path: string): Promise<T | null> {
+    try {
+      return (await (await call("GET", path)).json()) as T;
+    } catch {
+      return null;
+    }
+  },
+
   async PlayAudio(params: { application_name: string; stock_path: string }): Promise<void> {
     await (await call("POST", "audio/play", params)).text();
   },

@@ -19,6 +19,7 @@ import { configFrom, type Config } from "./config.ts";
 import { demoAgenda, demoOf } from "./demo.ts";
 import { loadFeed } from "./feed.ts";
 import { ZoneResolver } from "./ics/tz.ts";
+import { helpElements, USB_ADDRESS, type WebAddress } from "./help.ts";
 import { backFrame, dayLabel, frontFrame, hm, type Element } from "./screens.ts";
 import { buildTimeline, clampScroll, eventPage, homeScroll, nowXpm, timelineFrame, type Want } from "./timeline.ts";
 import type { Vendor } from "./sources.ts";
@@ -297,7 +298,9 @@ async function render(): Promise<void> {
       }
       let updated = 0;
       for (let i = 0; i < stored.sources.length; i += 1) updated = Math.max(updated, stored.sources[i].updated);
-      const back = backFrame({ now, offset, agenda, showAllDay: config.allDay, notice: notice(now), updated, browsed: navigated ? picked : null, vendors: vendors() });
+      const back = config.sources.length === 0
+        ? (helpElements(addresses) as unknown as Element[])
+        : backFrame({ now, offset, agenda, showAllDay: config.allDay, notice: notice(now), updated, browsed: navigated ? picked : null, vendors: vendors() });
       drawnBack = await sendFrame(back, drawnBack, null);
     } while (drawAgain && !stopped);
   } catch (e) {
@@ -449,15 +452,60 @@ function onInput(event: BusyInputEvent, quit: () => void): void {
   }
 }
 
-async function main(): Promise<void> {
-  config = configFrom(await loadValues());
-  await readTime();
+// ---------------------------------------------------------------------------
+// No calendar yet: help on the back, and the settings looked at again until a link comes.
+
+/** While help is up, look again at the settings and at where the bar's web page opens: Wi-Fi may join, a cable come. */
+const HELP_REFRESH = 30 * 1000;
+let addresses: WebAddress[] = [];
+let helpCheckedAt = 0;
+let helpChecking = false;
+
+/** Where the bar's web page opens: Wi-Fi when its API is open there without a password; USB when the port has power. */
+async function webAddresses(): Promise<WebAddress[]> {
+  const wifi = await device.GetJson<{ state?: string; ip_config?: { address?: string } }>("wifi/status");
+  const access = await device.GetJson<{ mode?: string }>("access");
+  const power = await device.GetJson<{ usb_voltage?: number }>("status/power");
+  const out: WebAddress[] = [];
+  const wifiAddress = wifi?.ip_config?.address;
+  if (wifi?.state === "connected" && wifiAddress && access?.mode === "enabled") out.push({ how: "Wi-Fi", address: wifiAddress });
+  // A charger cannot be told from a computer's port.
+  if ((power?.usb_voltage ?? 0) > 4000) out.push({ how: "USB", address: USB_ADDRESS });
+  return out;
+}
+
+async function checkHelp(): Promise<void> {
+  if (helpChecking) return;
+  helpChecking = true;
+  try {
+    helpCheckedAt = Date.now();
+    const values = await loadValues();
+    if (configFrom(values).sources.length > 0) {
+      applyConfig(values);
+      console.log(`${APP}: a calendar was added`);
+    } else addresses = await webAddresses();
+    void render();
+  } finally {
+    helpChecking = false;
+  }
+}
+
+function applyConfig(values: Awaited<ReturnType<typeof loadValues>>): void {
+  config = configFrom(values);
   stored = load(config.sources.map((s) => s.url), config.sources.map((s) => s.index));
   rebuild();
   const now = Date.now();
   // The first reads go one after another, right away; a calendar read recently by the last launch waits its turn.
   nextRead = stored.sources.map((s, i) => (s.updated > now - config.refreshMinutes * MIN ? s.updated + config.refreshMinutes * MIN : now + i));
   failures = stored.sources.map(() => 0);
+}
+
+async function main(): Promise<void> {
+  const values = await loadValues();
+  await readTime();
+  applyConfig(values);
+  if (config.sources.length === 0) addresses = await webAddresses();
+  helpCheckedAt = Date.now();
   console.log(`${APP}: ${config.sources.length} calendars, bar offset ${offset} min (${zoneName})`);
   void render();
 
@@ -477,6 +525,7 @@ async function main(): Promise<void> {
     if (t - timeCheckedAt > TIME_CHECK) readTime().catch(report);
     void render();
     maybeRead().catch(report);
+    if (config.sources.length === 0 && t - helpCheckedAt > HELP_REFRESH) checkHelp().catch(report);
   }, TICK_MS);
 
   const unbind = listen("input", (event) => {
