@@ -1,0 +1,168 @@
+{
+  "format_version": 1,
+  "version": 2,
+  "fields": {
+    "calendar_1": {
+      "type": "group",
+      "label": "Calendar 1",
+      "fields": {
+        "url": {
+          "type": "string",
+          "label": "iCal link",
+          "description": "The calendar's secret or public iCal (.ics) link; webcal:// works too. Where to find it in Outlook, Google, iCloud and others: github.com/mrlunev/busybar-ical-calendar#calendar-links-where-to-find-them",
+          "default": "",
+          "max_length": 255,
+          "sensitive": true
+        },
+        "name": {
+          "type": "string",
+          "label": "Name on screen",
+          "description": "A short name, e.g. Work. Empty: the service's name.",
+          "default": "",
+          "max_length": 12
+        },
+        "alerts": {
+          "type": "boolean",
+          "label": "Alerts",
+          "description": "Warn before this calendar's meetings: the screen lights up, the LED blinks and a sound plays. Off: its meetings are only shown.",
+          "default": true
+        }
+      }
+    },
+    "calendar_2": {
+      "type": "group",
+      "label": "Calendar 2",
+      "fields": {
+        "url": {
+          "type": "string",
+          "label": "iCal link",
+          "description": "The calendar's secret or public iCal (.ics) link; webcal:// works too. Where to find it in Outlook, Google, iCloud and others: github.com/mrlunev/busybar-ical-calendar#calendar-links-where-to-find-them",
+          "default": "",
+          "max_length": 255,
+          "sensitive": true
+        },
+        "name": {
+          "type": "string",
+          "label": "Name on screen",
+          "description": "A short name, e.g. Work. Empty: the service's name.",
+          "default": "",
+          "max_length": 12
+        },
+        "alerts": {
+          "type": "boolean",
+          "label": "Alerts",
+          "description": "Warn before this calendar's meetings: the screen lights up, the LED blinks and a sound plays. Off: its meetings are only shown.",
+          "default": true
+        }
+      }
+    },
+    "calendar_3": {
+      "type": "group",
+      "label": "Calendar 3",
+      "fields": {
+        "url": {
+          "type": "string",
+          "label": "iCal link",
+          "description": "The calendar's secret or public iCal (.ics) link; webcal:// works too. Where to find it in Outlook, Google, iCloud and others: github.com/mrlunev/busybar-ical-calendar#calendar-links-where-to-find-them",
+          "default": "",
+          "max_length": 255,
+          "sensitive": true
+        },
+        "name": {
+          "type": "string",
+          "label": "Name on screen",
+          "description": "A short name, e.g. Work. Empty: the service's name.",
+          "default": "",
+          "max_length": 12
+        },
+        "alerts": {
+          "type": "boolean",
+          "label": "Alerts",
+          "description": "Warn before this calendar's meetings: the screen lights up, the LED blinks and a sound plays. Off: its meetings are only shown.",
+          "default": true
+        }
+      }
+    },
+    "general": {
+      "type": "group",
+      "label": "General",
+      "description": "For all calendars.",
+      "fields": {
+        "alert_minutes": {
+          "type": "enum",
+          "label": "Warn before",
+          "description": "How long before a meeting the bar warns: the screen lights up, the LED blinks and a sound plays. Dismiss it with OK or Start.",
+          "default": "5",
+          "options": [
+            {
+              "value": "0",
+              "label": "Off"
+            },
+            {
+              "value": "1",
+              "label": "1 min"
+            },
+            {
+              "value": "2",
+              "label": "2 min"
+            },
+            {
+              "value": "5",
+              "label": "5 min"
+            },
+            {
+              "value": "10",
+              "label": "10 min"
+            },
+            {
+              "value": "15",
+              "label": "15 min"
+            }
+          ]
+        },
+        "alert_at_start": {
+          "type": "boolean",
+          "label": "Warn again at the start",
+          "description": "If nobody dismissed the first warning, warn once more when the meeting begins.",
+          "default": true
+        },
+        "sound": {
+          "type": "boolean",
+          "label": "Sound",
+          "description": "Play a sound with each warning.",
+          "default": true
+        },
+        "all_day": {
+          "type": "boolean",
+          "label": "All-day events",
+          "description": "Show all-day events in the agenda. They never warn.",
+          "default": true
+        },
+        "refresh_minutes": {
+          "type": "enum",
+          "label": "Check calendars every",
+          "description": "Each check reads every calendar again; services update their links with a delay of their own.",
+          "default": "10",
+          "options": [
+            {
+              "value": "5",
+              "label": "5 min"
+            },
+            {
+              "value": "10",
+              "label": "10 min"
+            },
+            {
+              "value": "15",
+              "label": "15 min"
+            },
+            {
+              "value": "30",
+              "label": "30 min"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

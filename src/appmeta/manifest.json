@@ -1,0 +1,10 @@
+{
+  "format_version": 1,
+  "id": "app.mrlunev.ical_calendar",
+  "name": "iCal Calendar",
+  "version": "0.1.0",
+  "api_version": "27.15.0",
+  "description": "Your meetings from iCal links: a countdown, alerts and today's agenda",
+  "author": "mrlunev",
+  "heap_size_kib": 384
+}

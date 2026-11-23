@@ -1,0 +1,14 @@
+{
+  "category": "productivity",
+  "short_description": "Your week from up to three iCal links on one timeline, with a loud warning before each meeting. No computer needed.",
+  "description": "Your meetings on the BUSY Bar, read by the bar itself from iCal links: Outlook and Microsoft 365, Google Calendar, iCloud, Proton, Fastmail, Nextcloud and any other service that gives an .ics link. Up to three calendars show together as one.\n\nThe front screen is a timeline of the days ahead, with the current time as a red line. The back screen lists the day's meetings. A few minutes before a meeting the bar warns you: the screen lights up, the LED blinks and a sound plays; if nobody dismisses it, it warns once more when the meeting begins.\n\n**Controls**\n\n- **Scroll Wheel:** move along the timeline.\n- **OK** or **Start:** dismiss a warning; open the meeting under the marker.\n- **Back:** close the meeting, then return to now, then leave the app.\n- **Hold OK:** check the calendars now.\n\n**Setup:** in the bar's web interface open **Apps → iCal Calendar** and paste your calendar's iCal link; how to find it for each service is in the app's README. Try it without a link: type *demo*.\n\n**Good to know**\n\n- The link opens your whole calendar to anyone who has it: treat it like a password. It stays in the bar's settings.\n- Changes reach the bar with a delay: the app checks every 10 minutes (adjustable), and each service refreshes its link on its own schedule.\n- Set the bar's time zone, or meeting times show in UTC.\n- A BUSY session closes every app, this one too: during it there are no warnings.\n- Needs firmware 1.4.1.\n\nOutlook, Microsoft 365, Google Calendar, iCloud, Proton and Fastmail are trademarks of their owners; this app is not made or endorsed by them.",
+  "changelog": "First version in the catalog.",
+  "screenshots": [
+    "screenshots/front-1.png",
+    "screenshots/front-2.png",
+    "screenshots/front-3.png"
+  ],
+  "back_screenshots": [
+    "screenshots/back-1.png"
+  ]
+}

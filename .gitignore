@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.*
+*.ics
+*.local.txt
+dist
+*.log
+.DS_Store
+._*
+.busy/
+submission/
+screenshots/tmp/
