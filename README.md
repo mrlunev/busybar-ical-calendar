@@ -53,6 +53,7 @@ Step by step for Outlook and Microsoft 365, Outlook.com, Google Calendar, iCloud
 ## Good to know
 
 - The link opens your whole calendar to anyone who has it: treat it like a password. It stays in the bar's settings.
+- The bar talks only to your calendar services; the app sends nothing anywhere else.
 - Set the bar's time zone, or meeting times show in UTC.
 - A BUSY session closes every app, this one too: during it there are no warnings.
 - Needs firmware 1.4.1 or newer.
