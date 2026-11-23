@@ -20,7 +20,7 @@ The front display is a timeline of the days ahead, with the current time as a re
 
 ## Setup
 
-1. Find your calendar's iCal link: see below.
+1. Find your calendar's iCal link: [step-by-step guide](CALENDAR-LINKS.md).
 2. Open the BUSY Bar's web interface, go to **Apps, iCal Calendar**, and paste the link into **Calendar 1**. Two more calendars go into **Calendar 2** and **Calendar 3**.
 3. Start the app on the bar.
 
@@ -46,25 +46,7 @@ The app reads its settings when it starts: after a change, close it and start it
 
 ## Calendar links: where to find them
 
-The app reads a calendar from its iCal (.ics) link: a private address the calendar service gives you. Paste it into the app's settings in the BUSY Bar's web page (Apps, iCal Calendar). Anyone who has the link can read the calendar, so treat it like a password; every service lets you reset it.
-
-**Outlook, work or school (Microsoft 365).** Outlook on the web, Settings, Calendar, Shared calendars, Publish a calendar. Pick the calendar and "Can view all details", Publish, then copy the ICS link. No Publish section: your administrator turned publishing off.
-
-**Outlook.com (personal).** The same steps at outlook.live.com.
-
-**Google Calendar.** calendar.google.com on a computer, Settings, your calendar under "Settings for my calendars", Integrate calendar, then copy "Secret address in iCal format". In a Google Workspace account your administrator may hide it.
-
-**iCloud (Apple Calendar).** On iPhone: Calendar, Calendars, the (i) next to the calendar, turn on Public Calendar, Share Link, Copy. Or on icloud.com/calendar: the share button next to the calendar, Public Calendar, Copy Link. A webcal:// link works as it is.
-
-**Proton Calendar** (paid plans). calendar.proton.me, Settings, Calendars, the calendar, Share with anyone, Create link with Full view, copy it. Proton says changes can take up to 8 hours to reach the link.
-
-**Fastmail.** Settings, Calendars, Edit next to the calendar, Publish with Full event details, copy the iCal link.
-
-**Nextcloud.** Calendar, the menu next to the calendar, Share link, Copy subscription link (it ends with ?export).
-
-**Anything else** (Zoho, Yahoo, Teamup and others): look for a link called iCal, ICS or "subscribe". Notion Calendar and Calendly have none of their own: use the link of the Google or Outlook calendar they are connected to.
-
-Changes reach the bar with a delay: the app checks every 10 minutes (adjustable), and each service refreshes its link on its own schedule.
+Step by step for Outlook and Microsoft 365, Outlook.com, Google Calendar, iCloud, Proton, Fastmail, Nextcloud and others, and what to do when a link does not work: [CALENDAR-LINKS.md](CALENDAR-LINKS.md).
 
 ## Good to know
 

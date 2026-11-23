@@ -9,7 +9,7 @@
         "url": {
           "type": "string",
           "label": "iCal link",
-          "description": "The calendar's secret or public iCal (.ics) link; webcal:// works too. Where to find it in Outlook, Google, iCloud and others: github.com/mrlunev/busybar-ical-calendar#calendar-links-where-to-find-them",
+          "description": "The calendar's secret or public iCal (.ics) link; webcal:// works too. Where to find it in Outlook, Google, iCloud and others: github.com/mrlunev/busybar-ical-calendar/blob/main/CALENDAR-LINKS.md",
           "default": "",
           "max_length": 255,
           "sensitive": true
@@ -36,7 +36,7 @@
         "url": {
           "type": "string",
           "label": "iCal link",
-          "description": "The calendar's secret or public iCal (.ics) link; webcal:// works too. Where to find it in Outlook, Google, iCloud and others: github.com/mrlunev/busybar-ical-calendar#calendar-links-where-to-find-them",
+          "description": "The calendar's secret or public iCal (.ics) link; webcal:// works too. Where to find it in Outlook, Google, iCloud and others: github.com/mrlunev/busybar-ical-calendar/blob/main/CALENDAR-LINKS.md",
           "default": "",
           "max_length": 255,
           "sensitive": true
@@ -63,7 +63,7 @@
         "url": {
           "type": "string",
           "label": "iCal link",
-          "description": "The calendar's secret or public iCal (.ics) link; webcal:// works too. Where to find it in Outlook, Google, iCloud and others: github.com/mrlunev/busybar-ical-calendar#calendar-links-where-to-find-them",
+          "description": "The calendar's secret or public iCal (.ics) link; webcal:// works too. Where to find it in Outlook, Google, iCloud and others: github.com/mrlunev/busybar-ical-calendar/blob/main/CALENDAR-LINKS.md",
           "default": "",
           "max_length": 255,
           "sensitive": true
