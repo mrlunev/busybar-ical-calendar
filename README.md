@@ -2,10 +2,12 @@
 
 Your week from up to three iCal links on one timeline, with a loud warning before each meeting. The bar reads the calendars itself over its own Wi-Fi: no account to sign in to, no computer, no server in between.
 
-<img src="screenshots/front-1@8x.png" width="576" alt="A warning on the front display: Product sync in 5 min, 11:10">
-<img src="screenshots/front-2@8x.png" width="576" alt="The timeline on the front display, the current time as a red line">
-<img src="screenshots/front-3@8x.png" width="576" alt="A meeting's page on the front display">
+<img src="screenshots/front-1@8x.png" width="576" alt="The timeline: now as a red line across the meeting under way">
+<img src="screenshots/front-2@8x.png" width="576" alt="A warning five minutes before a meeting">
+<img src="screenshots/front-3@8x.png" width="576" alt="Two meetings from two calendars on the timeline">
+<img src="screenshots/front-4@8x.png" width="576" alt="A warning when a meeting starts">
 <img src="screenshots/back-1@4x.png" width="640" alt="The day's meetings on the back display">
+<img src="screenshots/back-2@4x.png" width="640" alt="The back display before a calendar is added">
 
 Works with Outlook and Microsoft 365, Google Calendar, iCloud, Proton, Fastmail, Nextcloud and any other service that gives an iCal (.ics) link. Up to three calendars show together as one.
 
@@ -54,6 +56,7 @@ Step by step for Outlook and Microsoft 365, Outlook.com, Google Calendar, iCloud
 - Set the bar's time zone, or meeting times show in UTC.
 - A BUSY session closes every app, this one too: during it there are no warnings.
 - Needs firmware 1.4.1 or newer.
+- The back display is an early version; later versions will improve it.
 - Microsoft 365 links: firmware 1.4.1 loses the last few kilobytes of their answer. The app keeps every meeting up to the last one that arrived whole, so the meetings furthest ahead may be missing until the firmware is fixed.
 
 ## Build and install

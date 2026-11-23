@@ -281,9 +281,10 @@ async function render(): Promise<void> {
       }
       const loaded = stored.sources.some((s) => s.updated > 0 || s.error !== "");
       const toastNow = now < toastUntil ? toast : "";
-      if (toastNow !== "" || config.sources.length === 0 || !loaded || shown !== null) {
+      const broken = isBroken();
+      if (toastNow !== "" || config.sources.length === 0 || !loaded || broken || shown !== null) {
         const front = frontFrame({
-          now, offset, configured: config.sources.length > 0, loaded, alert: shown,
+          now, offset, configured: config.sources.length > 0, loaded, broken, alert: shown,
           current: null, next: null, browsed: null, toast: toastNow, agenda, vendors: vendors(),
         });
         await sendFront(asWants(front.elements), led === "" ? front.led : null);
@@ -298,8 +299,8 @@ async function render(): Promise<void> {
       }
       let updated = 0;
       for (let i = 0; i < stored.sources.length; i += 1) updated = Math.max(updated, stored.sources[i].updated);
-      const back = config.sources.length === 0
-        ? (helpElements(addresses) as unknown as Element[])
+      const back = config.sources.length === 0 || broken
+        ? (helpElements(addresses, broken ? "broken" : "none") as unknown as Element[])
         : backFrame({ now, offset, agenda, showAllDay: config.allDay, notice: notice(now), updated, browsed: navigated ? picked : null, vendors: vendors() });
       drawnBack = await sendFrame(back, drawnBack, null);
     } while (drawAgain && !stopped);
@@ -474,15 +475,25 @@ async function webAddresses(): Promise<WebAddress[]> {
   return out;
 }
 
+/** Every calendar failed its first read: the links themselves are wrong, so the back shows help instead of an empty week. */
+function isBroken(): boolean {
+  if (config.sources.length === 0) return false;
+  for (let i = 0; i < stored.sources.length; i += 1) if (stored.sources[i].updated > 0 || stored.sources[i].error === "") return false;
+  return true;
+}
+
+const linksOf = (c: Config) => c.sources.map((x) => x.url).join("\n");
+
 async function checkHelp(): Promise<void> {
   if (helpChecking) return;
   helpChecking = true;
   try {
     helpCheckedAt = Date.now();
     const values = await loadValues();
-    if (configFrom(values).sources.length > 0) {
+    const next = configFrom(values);
+    if (next.sources.length > 0 && linksOf(next) !== linksOf(config)) {
       applyConfig(values);
-      console.log(`${APP}: a calendar was added`);
+      console.log(`${APP}: the links changed`);
     } else addresses = await webAddresses();
     void render();
   } finally {
@@ -504,7 +515,7 @@ async function main(): Promise<void> {
   const values = await loadValues();
   await readTime();
   applyConfig(values);
-  if (config.sources.length === 0) addresses = await webAddresses();
+  addresses = await webAddresses();
   helpCheckedAt = Date.now();
   console.log(`${APP}: ${config.sources.length} calendars, bar offset ${offset} min (${zoneName})`);
   void render();
@@ -525,7 +536,7 @@ async function main(): Promise<void> {
     if (t - timeCheckedAt > TIME_CHECK) readTime().catch(report);
     void render();
     maybeRead().catch(report);
-    if (config.sources.length === 0 && t - helpCheckedAt > HELP_REFRESH) checkHelp().catch(report);
+    if ((config.sources.length === 0 || isBroken()) && t - helpCheckedAt > HELP_REFRESH) checkHelp().catch(report);
   }, TICK_MS);
 
   const unbind = listen("input", (event) => {

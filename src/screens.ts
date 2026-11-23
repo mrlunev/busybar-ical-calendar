@@ -204,6 +204,8 @@ export interface FrontState {
   offset: number;
   configured: boolean;
   loaded: boolean;
+  /** Every calendar failed its first read: the links themselves are wrong. */
+  broken?: boolean;
   alert: Alert | null;
   /** The meeting under way, if any. */
   current: Instance | null;
@@ -228,6 +230,9 @@ const FREE_GREEN = "#3FC069FF";
  */
 export function frontFrame(s: FrontState): { elements: Element[]; led: string | null } {
   if (s.toast !== "") return { elements: [text("l1", s.toast, 2, 0, WHITE, { width: 70, ...SCROLL })], led: null };
+  if (s.broken) {
+    return { elements: [text("l1", "CHECK THE LINK", FRONT_W / 2, 0, WHITE, { align: "top_mid" }), text("l2", "SEE BACK SCREEN", FRONT_W / 2, 7, GREY, { align: "top_mid" })], led: null };
+  }
   if (!s.configured) {
     // As Host Load and Net Traffic do: a short signal here, what to do on the back.
     return { elements: [text("l1", "ADD A CALENDAR", FRONT_W / 2, 0, WHITE, { align: "top_mid" }), text("l2", "SEE BACK SCREEN", FRONT_W / 2, 7, GREY, { align: "top_mid" })], led: null };
@@ -283,7 +288,8 @@ function backText(id: string, value: string, x: number, y: number, color: string
     x,
     y,
     text: value === "" ? " " : smallText(value),
-    font: "small",
+    // `normal` on the back: 7 px capitals on a 12 px line, against `small`'s 5 on 9.
+    font: "normal",
     color,
     z_index: 2,
     ...(width !== undefined ? { width, scroll_rate: 0 } : {}),
@@ -306,11 +312,12 @@ export interface BackState {
   vendors: readonly Vendor[];
 }
 
-const ROW_H = 9;
-const FIRST_ROW = 11;
-const ROWS = 6;
+// The back's rows in `normal` (measured on the bar 23.11: "10:00" 25 px, "all day" 32, capitals on rows 2..8 of the line).
+const ROW_H = 12;
+const FIRST_ROW = 12;
+const NOTICE_Y = 68;
 const TIME_X = 13;
-const TITLE_X = 42;
+const TITLE_X = 50;
 
 /** Rows of the agenda from the meeting under way on, with a header line for each new day. */
 export function backFrame(s: BackState): Element[] {
@@ -320,6 +327,7 @@ export function backFrame(s: BackState): Element[] {
     elements.push({ ...backText("b_upd", ago < 1 ? "just now" : ago < 60 ? `${ago} min ago` : `${Math.round(ago / 60)} h ago`, BACK_W - 2, 0, BACK_GREY), align: "top_right" } as Element);
   }
   const list = s.agenda.filter((x) => x.end > s.now && (s.showAllDay || !x.allDay));
+  const ROWS = s.notice !== "" ? 4 : 5;
   let row = 0;
   let day = dayIndex(s.now, s.offset);
   for (let i = 0; i < list.length && row < ROWS; i += 1) {
@@ -334,13 +342,14 @@ export function backFrame(s: BackState): Element[] {
     const y = FIRST_ROW + row * ROW_H;
     const on = x.start <= s.now && !x.allDay;
     const marked = s.browsed !== null && s.browsed.start === x.start && s.browsed.uid === x.uid;
-    if (on || marked) elements.push(backRect(`b_m${row}`, 0, y + 1, 2, 7, BACK_WHITE));
-    elements.push(picture(`b_g${row}`, logoXpm(s.vendors[x.source] || "other"), 3, y, "back"));
+    if (on || marked) elements.push(backRect(`b_m${row}`, 0, y + 2, 2, 7, BACK_WHITE));
+    elements.push(picture(`b_g${row}`, logoXpm(s.vendors[x.source] || "other"), 3, y + 1, "back"));
     elements.push(backText(`b_t${row}`, x.allDay ? "all day" : hm(x.start, s.offset), TIME_X, y, on ? BACK_WHITE : BACK_GREY));
     elements.push(backText(`b_n${row}`, x.title === "" ? "(no title)" : x.title, TITLE_X, y, x.free ? BACK_DARK : on ? BACK_WHITE : BACK_LIGHT, BACK_W - TITLE_X));
     row += 1;
   }
   if (list.length === 0) elements.push(backText("b_none", "Nothing more this week", 0, FIRST_ROW, BACK_GREY));
-  if (s.notice !== "") elements.push(backText("b_note", s.notice, 0, 71, BACK_GREY, BACK_W));
+  // A long notice runs along its line rather than being cut.
+  if (s.notice !== "") elements.push({ ...backText("b_note", s.notice, 0, NOTICE_Y, BACK_GREY, BACK_W), ...SCROLL } as Element);
   return elements;
 }

@@ -1,7 +1,8 @@
 /**
- * Help on the back display while no calendar is set: where to open the bar's web
- * page and where to go there. The front keeps its short signal (ADD A CALENDAR,
- * SEE BACK SCREEN); the back says what to do about it.
+ * Help on the back display while no calendar is set, or none of the links can be
+ * read: where to open the bar's web page and where to go there. The front keeps its
+ * short signal (ADD A CALENDAR or CHECK THE LINK, SEE BACK SCREEN); the back says
+ * what to do about it.
  *
  * Layout and widths follow Net Traffic's and Host Load's help screens, measured on
  * the back display (21.11); the drawable width is 148 px, the right 12 px are the
@@ -122,7 +123,7 @@ function xpm(rows: readonly string[], color: string): string {
  * The help. Ids are unique per element and never reused for
  * another type: the firmware refuses a type change under the same id.
  */
-export function helpElements(addresses: readonly WebAddress[]): HelpElement[] {
+export function helpElements(addresses: readonly WebAddress[], problem: "none" | "broken" = "none"): HelpElement[] {
   const out: HelpElement[] = [];
   let y = 0;
 
@@ -192,7 +193,7 @@ export function helpElements(addresses: readonly WebAddress[]): HelpElement[] {
     y += TAG_STEP;
   };
 
-  line("title", "No calendar yet", "bold", WHITE);
+  line("title", problem === "broken" ? "The link doesn't work" : "No calendar yet", "bold", WHITE);
   line("open", addresses.length > 0 ? "Open in a browser:" : "Plug in by USB, open:");
   const list: readonly WebAddress[] =
     addresses.length > 0 ? addresses : [{ how: "USB", address: USB_ADDRESS }];
@@ -203,7 +204,7 @@ export function helpElements(addresses: readonly WebAddress[]): HelpElement[] {
   picture("arrow", arrowX, y + 3, ARROW, WHITE); // centred on the 7 px capitals
   text("app", arrowX + ARROW_W + SPACE, y, "iCal Calendar", "bold", WHITE);
   y += LINE;
-  line("follow", "and paste an iCal link");
+  line("follow", problem === "broken" ? "and paste the iCal link again" : "and paste an iCal link");
 
   return out;
 }

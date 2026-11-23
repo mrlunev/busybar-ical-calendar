@@ -339,7 +339,9 @@ export function buildTimeline(next: TimelineInput): void {
       const x = members[k];
       const lk = look(input.vendors[x.source]);
       const y = pageY(Math.max(x.start, first));
-      const h = Math.max(14, pageY(Math.min(x.end, last)) - y);
+      // A short meeting gets 14 px for its title, but never over the meeting right after it.
+      const until = c + 1 < clusters.length ? pageY(clusters[c + 1][0].start) : Infinity;
+      const h = Math.max(Math.min(14, until - y), pageY(Math.min(x.end, last)) - y);
       let px = 1;
       let pw = 62;
       let vis = 62;
@@ -471,7 +473,7 @@ export function timelineFrame(scroll: number, now: number, colon: boolean): { wa
       want.push({ id: `${id}s`, key: `${y}`, y, v: "", make: () => rect(`${id}s`, p.x - 1, y + 1, 1, p.h - 2, "#00000070", 1 + z) });
       want.push({ id: `${id}S`, key: `${y}`, y, v: "", make: () => rect(`${id}S`, p.x - 2, y + 1, 1, p.h - 2, "#00000038", 1 + z) });
     }
-    if (y + 6 > 0 && y + 1 < 16) want.push({ id: `${id}t`, key: `${y}`, y, v: "", make: () => xpm(`${id}t`, p.head, p.x + 2, y + 1, 4 + z) });
+    if (p.h >= 6 && y + 6 > 0 && y + 1 < 16) want.push({ id: `${id}t`, key: `${y}`, y, v: "", make: () => xpm(`${id}t`, p.head, p.x + 2, y + 1, 4 + z) });
     const color = p.instance.free ? FREE_TEXT : WHITE;
     if (p.lines !== null) {
       for (let l = 0; l < p.lines.length; l += 1) {
