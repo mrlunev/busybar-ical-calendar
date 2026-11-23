@@ -21,7 +21,7 @@
  */
 
 import type { Instance } from "./agenda.ts";
-import { cleanText, fitsSmall } from "./glyphs.ts";
+import { cleanText, smallText } from "./glyphs.ts";
 import type { Vendor } from "./sources.ts";
 
 const MIN = 60000;
@@ -259,18 +259,7 @@ const pageEnd = () => dayLine(input.days) + 4;
 
 /** Titles are drawn in capitals in `small`; what it cannot draw is simplified or replaced. */
 function plainTitle(raw: string): string {
-  let t = cleanText(raw === "" ? "(no title)" : raw).toUpperCase();
-  if (!fitsSmall(t)) {
-    try {
-      t = t.normalize("NFD").replace(/[̀-ͯ]/g, "");
-    } catch {
-      // No normalize on this engine: the characters are replaced below.
-    }
-    let out = "";
-    for (let i = 0; i < t.length; i += 1) out += fitsSmall(t.charAt(i)) ? t.charAt(i) : "?";
-    t = out;
-  }
-  return t;
+  return smallText(cleanText(raw === "" ? "(no title)" : raw)).toUpperCase();
 }
 
 /** The title's lines when the plate is tall enough for all of them, or null for a marquee. */

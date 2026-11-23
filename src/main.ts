@@ -176,6 +176,30 @@ async function sendFront(want: Want[], led: string | null): Promise<void> {
   }
 }
 
+const FLASHES = 4;
+const FLASH_ON = 80;
+const FLASH_OFF = 120;
+const LED_OFF = "#000000FF";
+const pause = (ms: number) => new Promise<void>((done) => setTimeout(done, ms));
+
+/**
+ * A new warning catches the eye like a phone's flash: quick strobes of the light guide, then the firmware's
+ * own three slow blinks. The bar's only way to the LED is a draw's `led_notification_color`, which restarts the
+ * notification blink with that colour at once, so the strobes are draws of the warning's background alternating
+ * the colour and black. A dismissed warning stops them.
+ */
+async function flash(color: string, key: string): Promise<void> {
+  const bg = frontEl.bg;
+  if (bg === undefined) return;
+  for (let i = 0; i < FLASHES && soundFor === key && stored.dismissed.indexOf(key) < 0; i += 1) {
+    await device.DisplayDraw({ application_name: APP, priority: 50, elements: [bg], led_notification_color: color });
+    await pause(FLASH_ON);
+    await device.DisplayDraw({ application_name: APP, priority: 50, elements: [bg], led_notification_color: LED_OFF });
+    await pause(FLASH_OFF);
+  }
+  if (soundFor === key && stored.dismissed.indexOf(key) < 0) await device.DisplayDraw({ application_name: APP, priority: 50, elements: [bg], led_notification_color: color });
+}
+
 /** After a refused request the screens are unknown: take all of the app's elements away and draw everything again. */
 async function forgetScreens(): Promise<void> {
   frontKey = {};
@@ -262,6 +286,7 @@ async function render(): Promise<void> {
           current: null, next: null, browsed: null, toast: toastNow, agenda, vendors: vendors(),
         });
         await sendFront(asWants(front.elements), led === "" ? front.led : null);
+        if (led === "" && front.led !== null) await flash(front.led, shown === null ? "" : shown.key);
       } else if (opened !== null) {
         await sendFront(asWants(eventPage(opened, now, vendors(), offset, todayStart(now), config.sources.length > 1)), null);
       } else {

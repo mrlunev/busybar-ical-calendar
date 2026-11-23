@@ -82,7 +82,9 @@ test("screens: times in the bar's zone, day labels, the frame for each state", (
   assert.deepEqual(texts(picked), ["Sync", "Today 11:00-11:30"]);
   const back = backFrame({ now: NOW, offset: 0, agenda: [meeting(NOW - 10 * MIN, 30), meeting(NOW + 86400000, 30, { title: "Zürich" })], showAllDay: true, notice: "", updated: NOW, browsed: null, vendors });
   assert.ok(back.some((e) => e.type === "text" && (e as { text: string }).text === "Tomorrow"));
-  assert.ok(back.some((e) => e.type === "text" && (e as { font: string }).font === "global"));
+  // One font only: a title with diacritics loses them and stays in `small`.
+  assert.ok(back.some((e) => e.type === "text" && (e as { text: string }).text === "Zurich"));
+  assert.ok(back.every((e) => e.type !== "text" || (e as { font: string }).font === "small"));
 });
 
 test("time spans read the way people say them", () => {

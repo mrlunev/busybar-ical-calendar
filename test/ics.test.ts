@@ -6,7 +6,7 @@ import { IcsParser, parseDate, parseDuration } from "../src/ics/parse.ts";
 import { expand, parseRule } from "../src/ics/rrule.ts";
 import { LineReader, decodeUtf8 } from "../src/ics/text.ts";
 import { ZoneResolver, knownZone, offsetAt } from "../src/ics/tz.ts";
-import { cleanText, fitsSmall } from "../src/glyphs.ts";
+import { cleanText, fitsSmall, smallText } from "../src/glyphs.ts";
 
 const H = 3600000;
 const DAY = 24 * H;
@@ -50,11 +50,16 @@ test("text: UTF-8 split between pieces is decoded whole", () => {
   assert.equal(text, "Планёрка ü");
 });
 
-test("glyphs: emoji dropped, Cyrillic fits small, diacritics need global", () => {
+test("glyphs: emoji dropped, Cyrillic fits small, diacritics folded for small", () => {
   assert.equal(cleanText("🚀 Запуск  релиза ✅"), "Запуск релиза ✅".replace("✅", "✅"));
   assert.equal(cleanText("🎉🎉"), "?");
   assert.equal(fitsSmall("Планёрка — «итоги»"), true);
   assert.equal(fitsSmall("Zürich"), false);
+  assert.equal(smallText("Café with Zoë"), "Cafe with Zoe");
+  assert.equal(smallText("Łódź, Kraków, Straße, Œuvre, Ærø, ȘȚ"), "Lodz, Krakow, Strasse, OEuvre, AEro, ST");
+  assert.equal(smallText("Планёрка"), "Планёрка");
+  assert.equal(smallText("中文"), "??");
+  assert.equal(fitsSmall(smallText("Ångström ĳ ŉ ſ")), true);
 });
 
 test("dates and durations", () => {

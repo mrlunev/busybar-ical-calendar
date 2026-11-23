@@ -15,7 +15,7 @@ import type { DisplayDrawParams } from "@busy-app/busy-lib";
 
 import type { Instance } from "./agenda.ts";
 import type { Alert } from "./alerts.ts";
-import { fontFor } from "./glyphs.ts";
+import { smallText } from "./glyphs.ts";
 import { logoXpm } from "./logos.ts";
 import type { Vendor } from "./sources.ts";
 
@@ -31,11 +31,13 @@ const TEXT_X = 10;
 
 const WHITE = "#FFFFFFFF";
 const GREY = "#9AA0A6FF";
-const DARK = "#000000FF";
 /** A meeting under way: busy, as BUSY itself shows it. */
 export const BUSY_RED = "#F2453DFF";
 /** A meeting about to start. */
 export const SOON_AMBER = "#F5A623FF";
+/** Warning backgrounds: dark shades of their colour, so the text over them is the brightest thing. */
+const SOON_BG = "#4A3000FF";
+const NOW_BG = "#5A100CFF";
 
 const BACK_WHITE = "#FFFFFFFF";
 const BACK_LIGHT = "#C0C0C0FF";
@@ -90,17 +92,15 @@ export function span(ms: number): string {
 }
 
 function text(id: string, value: string, x: number, y: number, color: string, options: Partial<Record<string, unknown>> = {}): Element {
-  const font = fontFor(value, "small");
   return {
     id,
     type: "text",
     display: "front",
     align: "top_left",
     x,
-    // `global` is 11 px a line against `small`'s 9: two pixels up keep it on its line.
-    y: font === "global" ? y - 2 : y,
-    text: value === "" ? " " : value,
-    font,
+    y,
+    text: value === "" ? " " : smallText(value),
+    font: "small",
     color,
     z_index: 2,
     ...options,
@@ -236,12 +236,12 @@ export function frontFrame(s: FrontState): { elements: Element[]; led: string | 
     const x = s.alert.instance;
     if (s.alert.kind === "soon") {
       return {
-        elements: [rect("bg", 0, 0, FRONT_W, 16, SOON_AMBER), logo(x), title(x.title, DARK), ...until("in", x.start, s.now, DARK), text("l3", hm(x.start, s.offset), 71, 7, DARK, { align: "top_right" })],
+        elements: [rect("bg", 0, 0, FRONT_W, 16, SOON_BG), logo(x), title(x.title, WHITE), ...until("in", x.start, s.now, SOON_AMBER), text("l3", hm(x.start, s.offset), 71, 7, SOON_AMBER, { align: "top_right" })],
         led: SOON_AMBER,
       };
     }
     return {
-      elements: [rect("bg", 0, 0, FRONT_W, 16, BUSY_RED), logo(x), title(x.title, WHITE), text("l2", "Now", TEXT_X, 7, WHITE), text("l3", `${span(x.end - s.now)} left`, 71, 7, WHITE, { align: "top_right" })],
+      elements: [rect("bg", 0, 0, FRONT_W, 16, NOW_BG), logo(x), title(x.title, WHITE), text("l2", "Now", TEXT_X, 7, BUSY_RED), text("l3", `${span(x.end - s.now)} left`, 71, 7, BUSY_RED, { align: "top_right" })],
       led: BUSY_RED,
     };
   }
@@ -274,16 +274,15 @@ export function frontFrame(s: FrontState): { elements: Element[]; led: string | 
 }
 
 function backText(id: string, value: string, x: number, y: number, color: string, width?: number): Element {
-  const font = fontFor(value, "small");
   return {
     id,
     type: "text",
     display: "back",
     align: "top_left",
     x,
-    y: font === "global" ? y - 2 : y,
-    text: value === "" ? " " : value,
-    font,
+    y,
+    text: value === "" ? " " : smallText(value),
+    font: "small",
     color,
     z_index: 2,
     ...(width !== undefined ? { width, scroll_rate: 0 } : {}),
